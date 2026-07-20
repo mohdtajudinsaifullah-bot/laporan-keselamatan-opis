@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistem Laporan JSM</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    body { background: linear-gradient(135deg, #e8f4fd 0%, #f4f7f6 100%); min-height: 100vh; padding: 15px; font-family: 'Segoe UI', sans-serif; }
+    .main-card { border-radius: 18px; border: none; box-shadow: 0 8px 30px rgba(0,0,0,0.1); background: #fff; max-width: 720px; margin: 0 auto; padding: 28px 24px; }
+    .app-title { color: #1a56db; font-weight: 800; font-size: 1.25rem; letter-spacing: 0.5px; text-align: center; margin-bottom: 22px; }
+    .tab-group { display: flex; border-radius: 12px; overflow: hidden; margin-bottom: 22px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .tab-btn { flex: 1; padding: 11px 0; font-weight: 700; font-size: 0.97rem; border: none; cursor: pointer; transition: background 0.2s; }
+    .tab-pagi { background: #e3eeff; color: #1a56db; }
+    .tab-petang { background: #fff3d6; color: #b45309; }
+    .tab-sah { background: #fde8e8; color: #c81e1e; }
+    .tab-pagi.active { background: #1a56db; color: #fff; }
+    .tab-petang.active { background: #f59e0b; color: #fff; }
+    .tab-sah.active { background: #e02424; color: #fff; }
+    .profile-box { background: #f8fafc; border: 1.5px solid #e5eaf0; border-radius: 12px; padding: 14px 16px; margin-bottom: 16px; }
+    .sign-box { border: 2px dashed #d1d9e6; background: #fff; border-radius: 8px; min-height: 80px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .sign-box img { max-height: 70px; max-width: 100%; object-fit: contain; }
+    .checklist-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    .checklist-table th { background: #1a56db; color: #fff; font-size: 0.82rem; padding: 7px 10px; text-align: center; }
+    .checklist-table td { padding: 7px 10px; font-size: 0.85rem; border-bottom: 1px solid #f0f0f0; }
+    .radio-label { display: inline-flex; align-items: center; gap: 4px; margin: 0 5px; cursor: pointer; }
+    .btn-submit { width: 100%; padding: 13px; border-radius: 12px; font-weight: 800; border: none; cursor: pointer; margin-top: 6px; }
+    .btn-submit-pagi { background: #1a56db; color: #fff; }
+    .btn-submit-petang { background: #f59e0b; color: #fff; }
+    .btn-submit-sah { background: #e02424; color: #fff; }
+    .laporan-card { border: 1.5px solid #e5eaf0; border-radius: 10px; padding: 12px 14px; margin-bottom: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: #fff; }
+    .laporan-card.selected { border-color: #e02424; background: #fff0f0; }
+    .spinner { display: inline-block; width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; margin-right: 8px; vertical-align: middle; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1e293b; color: #fff; padding: 13px 28px; border-radius: 12px; display: none; z-index: 9999; }
+  </style>
+</head>
+<body>
+  <div class="main-card">
+    <div class="app-title">🏢 APLIKASI LAPORAN PEGAWAI BERTUGAS BUKA DAN TUTUP PINTU UTAMA BPKR</div>
+    <div class="tab-group">
+      <button class="tab-btn tab-pagi active" id="btnPagi" onclick="tab('PAGI')">🌅 Pagi</button>
+      <button class="tab-btn tab-petang" id="btnPetang" onclick="tab('PETANG')">🌇 Petang</button>
+      <button class="tab-btn tab-sah" id="btnPengesahan" onclick="tab('PENGESAHAN')">✅ Pengesahan</button>
+    </div>
+
+    <form id="fLapor" onsubmit="hantar(event)">
+      <div id="senaraiBox" class="mb-3" style="display:none;">
+        <label class="form-label fw-bold">📋 LAPORAN MENUNGGU PENGESAHAN</label>
+        <div id="senaraiList"><div class="text-muted p-2">⏳ Memuatkan...</div></div>
+        <hr>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-bold">PILIH NAMA</label>
+        <select id="selStaf" class="form-select" onchange="showProfile()" required>
+          <option value="">-- Sila Pilih Nama --</option>
+        </select>
+      </div>
+
+      <div id="pBox" class="profile-box" style="display:none;">
+        <div>Jawatan: <strong id="jStaf"></strong> <span class="badge bg-primary ms-2" id="modeBadge">PAGI</span></div>
+        <div class="sign-box mt-2">
+          <img id="sImg" src="" alt="Tandatangan" style="display:none;">
+          <span id="signPlaceholder" class="text-muted">Tiada tandatangan</span>
+        </div>
+      </div>
+
+      <div id="cArea" class="mb-3" style="display:none;">
+        <label class="form-label fw-bold">SEMAKAN TUTUP PINTU</label>
+        <table class="checklist-table table">
+          <thead>
+            <tr><th>Bil.</th><th>Perkara Semakan</th><th>Tindakan</th></tr>
+          </thead>
+          <tbody id="lBody"></tbody>
+        </table>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-bold">CATATAN</label>
+        <textarea id="catatan" class="form-control" rows="2" placeholder="Masukkan catatan jika ada..."></textarea>
+      </div>
+
+      <button type="submit" id="sBtn" class="btn-submit btn-submit-pagi">🌅 HANTAR LAPORAN PAGI</button>
+    </form>
+  </div>
+  <div id="toast"></div>
+
+  <script>
+    // ⚠️ GANTI DENGAN URL WEB APP MACRO KAU SENDIRI
+    const API_URL = "https://script.google.com/macros/s/AKfycbwxoT4mu_7l1EFEbyH70rdLZFEIYWQSmTVqLY2jcCLSh_DTB45krFzScijL8b49rBKCXg/exec"; 
+
+    let mode = 'PAGI';
+    let db = [];
+    let selectedRowIndex = null;
+    const checklistItems = [
+      "Semua pintu-pintu Bahagian/Unit dikunci.",
+      "Semua pintu rintangan api (kecemasan) bertutup rapat/berkunci.",
+      "Semua peralatan elektrik telah dimatikan.",
+      "Semua suis lampu dan telah dimatikan.",
+      "Peralatan elektrik di pantri telah dimatikan.",
+      "Kebersihan Bahagian/Unit memuaskan."
+    ];
+
+    // Ambil data menggunakan Fetch API menggantikan google.script.run
+    fetch(`${API_URL}?action=getStaffData`)
+      .then(res => res.json())
+      .then(r => {
+        db = r;
+        const s = document.getElementById('selStaf');
+        r.forEach(x => s.add(new Option(x.nama, x.nama)));
+      }).catch(e => showToast("⚠️ Gagal memuat data staf", "danger"));
+
+    function muatSenarai() {
+      document.getElementById('senaraiList').innerHTML = '<div>⏳ Memuatkan...</div>';
+      selectedRowIndex = null;
+      fetch(`${API_URL}?action=getLaporanMenunggu`)
+        .then(res => res.json())
+        .then(renderSenarai)
+        .catch(() => document.getElementById('senaraiList').innerHTML = '<div>⚠️ Gagal memuatkan senarai</div>');
+    }
+
+    function renderSenarai(senarai) {
+      const container = document.getElementById('senaraiList');
+      if (!senarai || senarai.length === 0) {
+        container.innerHTML = '<div class="text-success p-2">✅ Tiada laporan menunggu pengesahan.</div>';
+        return;
+      }
+      let html = '';
+      senarai.forEach(item => {
+        html += `
+          <div class="laporan-card" id="card_${item.rowIndex}" onclick="pilihLaporan(${item.rowIndex}, this)">
+            <div class="badge bg-danger">📅 ${item.tarikh}</div>
+            <div class="small text-end text-muted">
+              <div>🌅 <b>${item.namaPagi}</b> (${item.jamPagi})</div>
+              <div>🌇 <b>${item.namaPetang}</b> (${item.jamPetang})</div>
+            </div>
+          </div>`;
+      });
+      container.innerHTML = html;
+    }
+
+    function pilihLaporan(rowIndex, el) {
+      document.querySelectorAll('.laporan-card').forEach(c => c.classList.remove('selected'));
+      if (selectedRowIndex === rowIndex) { selectedRowIndex = null; } 
+      else { selectedRowIndex = rowIndex; el.classList.add('selected'); }
+    }
+
+    function showProfile() {
+      const nama = document.getElementById('selStaf').value;
+      const u = db.find(x => x.nama === nama);
+      const pBox = document.getElementById('pBox');
+      if (!u) { pBox.style.display = 'none'; return; }
+      if (mode === 'PENGESAHAN' && u.role !== 'ADMIN') {
+        showToast("🚫 Akses Ditolak! Anda bukan ADMIN.", "danger");
+        document.getElementById('selStaf').value = '';
+        pBox.style.display = 'none';
+        return;
+      }
+      pBox.style.display = 'block';
+      document.getElementById('jStaf').innerText = u.jawatan || "-";
+      const img = document.getElementById('sImg');
+      const ph = document.getElementById('signPlaceholder');
+      if (u.signUrl) {
+        img.src = u.signUrl; img.style.display = 'block'; ph.style.display = 'none';
+      } else {
+        img.style.display = 'none'; ph.style.display = 'block';
+      }
+    }
+
+    function tab(f) {
+      mode = f;
+      ['btnPagi','btnPetang','btnPengesahan'].forEach(id => document.getElementById(id).classList.remove('active'));
+      document.getElementById(f === 'PAGI' ? 'btnPagi' : f === 'PETANG' ? 'btnPetang' : 'btnPengesahan').classList.add('active');
+      document.getElementById('modeBadge').innerText = f;
+      
+      const btn = document.getElementById('sBtn');
+      btn.className = 'btn-submit btn-submit-' + (f === 'PENGESAHAN' ? 'sah' : f === 'PETANG' ? 'petang' : 'pagi');
+      btn.innerText = f === 'PAGI' ? '🌅 HANTAR LAPORAN PAGI' : f === 'PETANG' ? '🌇 HANTAR LAPORAN PETANG' : '✅ SAHKAN LAPORAN';
+
+      document.getElementById('senaraiBox').style.display = f === 'PENGESAHAN' ? 'block' : 'none';
+      if(f === 'PENGESAHAN') muatSenarai();
+
+      const cArea = document.getElementById('cArea');
+      if (f === 'PETANG') {
+        cArea.style.display = 'block';
+        let h = '';
+        checklistItems.forEach((v, i) => {
+          h += `<tr><td>${i+1}</td><td>${v}</td><td>
+            <label class="radio-label"><input type="radio" name="r${i}" value="/" checked> ✓ Ya</label>
+            <label class="radio-label"><input type="radio" name="r${i}" value="X"> ✗ Tidak</label>
+          </td></tr>`;
+        });
+        document.getElementById('lBody').innerHTML = h;
+      } else { cArea.style.display = 'none'; }
+      
+      document.getElementById('selStaf').value = '';
+      pBox.style.display = 'none';
+    }
+
+    function hantar(e) {
+      e.preventDefault();
+      const nama = document.getElementById('selStaf').value;
+      if (mode === 'PENGESAHAN' && !selectedRowIndex) return showToast("⚠️ Sila pilih laporan!", "warning");
+
+      const u = db.find(x => x.nama === nama);
+      const chk = [];
+      if (mode === 'PETANG') {
+        for (let i = 0; i < 6; i++) {
+          const sel = document.querySelector(`input[name="r${i}"]:checked`);
+          chk.push(sel ? sel.value : "/");
+        }
+      }
+
+      const btn = document.getElementById('sBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>Memproses...';
+
+      const payload = {
+        fasa: mode, nama: u.nama, signUrl: u.signUrl, checklist: chk,
+        catatan: document.getElementById('catatan').value.trim(), rowIndex: selectedRowIndex
+      };
+
+      // Hantar data menggunakan POST request ke API GAS
+      fetch(API_URL, {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.json())
+      .then(res => {
+        showToast(res.message, res.success ? "success" : "danger");
+        btn.disabled = false;
+        tab(mode);
+      }).catch(() => {
+        showToast("❌ Ralat Sambungan Network", "danger");
+        btn.disabled = false;
+      });
+    }
+
+    function showToast(msg, bg) {
+      const t = document.getElementById('toast');
+      t.innerText = msg; t.className = `badge bg-${bg} p-3 fs-6 d-block`;
+      t.style.display = 'block';
+      setTimeout(() => { t.style.display = 'none'; }, 4000);
+    }
+  </script>
+</body>
+</html>
