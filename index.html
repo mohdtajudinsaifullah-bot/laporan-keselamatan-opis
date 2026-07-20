@@ -10,7 +10,7 @@
     .main-card { border-radius: 18px; border: none; box-shadow: 0 8px 30px rgba(0,0,0,0.1); background: #fff; max-width: 720px; margin: 0 auto; padding: 28px 24px; }
     .app-title { color: #1a56db; font-weight: 800; font-size: 1.25rem; letter-spacing: 0.5px; text-align: center; margin-bottom: 22px; }
     .tab-group { display: flex; border-radius: 12px; overflow: hidden; margin-bottom: 22px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-    .tab-btn { flex: 1; padding: 11px 0; font-weight: 700; font-size: 0.97rem; border: none; cursor: pointer; transition: background 0.2s; }
+    .tab-btn { flex: 1; padding: 11px 0; font-weight: 700; font-size: 0.97rem; border: none; cursor: pointer; transition: background 0.2s; text-align: center; }
     .tab-pagi { background: #e3eeff; color: #1a56db; }
     .tab-petang { background: #fff3d6; color: #b45309; }
     .tab-sah { background: #fde8e8; color: #c81e1e; }
@@ -32,16 +32,16 @@
     .laporan-card.selected { border-color: #e02424; background: #fff0f0; }
     .spinner { display: inline-block; width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; margin-right: 8px; vertical-align: middle; }
     @keyframes spin { to { transform: rotate(360deg); } }
-    #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1e293b; color: #fff; padding: 13px 28px; border-radius: 12px; display: none; z-index: 9999; }
+    #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1e293b; color: #fff; padding: 13px 28px; border-radius: 12px; display: none; z-index: 9999; text-align: center;}
   </style>
 </head>
 <body>
   <div class="main-card">
     <div class="app-title">🏢 APLIKASI LAPORAN PEGAWAI BERTUGAS BUKA DAN TUTUP PINTU UTAMA BPKR</div>
     <div class="tab-group">
-      <button class="tab-btn tab-pagi active" id="btnPagi" onclick="tab('PAGI')">🌅 Pagi</button>
-      <button class="tab-btn tab-petang" id="btnPetang" onclick="tab('PETANG')">🌇 Petang</button>
-      <button class="tab-btn tab-sah" id="btnPengesahan" onclick="tab('PENGESAHAN')">✅ Pengesahan</button>
+      <button type="button" class="tab-btn tab-pagi active" id="btnPagi" onclick="tab('PAGI')">🌅 Pagi</button>
+      <button type="button" class="tab-btn tab-petang" id="btnPetang" onclick="tab('PETANG')">🌇 Petang</button>
+      <button type="button" class="tab-btn tab-sah" id="btnPengesahan" onclick="tab('PENGESAHAN')">✅ Pengesahan</button>
     </div>
 
     <form id="fLapor" onsubmit="hantar(event)">
@@ -87,7 +87,7 @@
   <div id="toast"></div>
 
   <script>
-    // ⚠️ GANTI DENGAN URL WEB APP MACRO KAU SENDIRI
+    // ⚠️ MASUKKAN URL MAKRU KAU DI SINI
     const API_URL = "https://script.google.com/macros/s/AKfycbwxoT4mu_7l1EFEbyH70rdLZFEIYWQSmTVqLY2jcCLSh_DTB45krFzScijL8b49rBKCXg/exec"; 
 
     let mode = 'PAGI';
@@ -102,14 +102,18 @@
       "Kebersihan Bahagian/Unit memuaskan."
     ];
 
-    // Ambil data menggunakan Fetch API menggantikan google.script.run
-    fetch(`${API_URL}?action=getStaffData`)
-      .then(res => res.json())
-      .then(r => {
-        db = r;
-        const s = document.getElementById('selStaf');
-        r.forEach(x => s.add(new Option(x.nama, x.nama)));
-      }).catch(e => showToast("⚠️ Gagal memuat data staf", "danger"));
+    function muatDataStaf() {
+      fetch(`${API_URL}?action=getStaffData`)
+        .then(res => res.json())
+        .then(r => {
+          db = r;
+          const s = document.getElementById('selStaf');
+          s.innerHTML = '<option value="">-- Sila Pilih Nama --</option>';
+          r.forEach(x => s.add(new Option(x.nama, x.nama)));
+        }).catch(e => showToast("⚠️ Gagal memuat data staf", "danger"));
+    }
+
+    muatDataStaf();
 
     function muatSenarai() {
       document.getElementById('senaraiList').innerHTML = '<div>⏳ Memuatkan...</div>';
@@ -195,7 +199,8 @@
       } else { cArea.style.display = 'none'; }
       
       document.getElementById('selStaf').value = '';
-      pBox.style.display = 'none';
+      document.getElementById('pBox').style.display = 'none';
+      document.getElementById('catatan').value = '';
     }
 
     function hantar(e) {
@@ -221,17 +226,21 @@
         catatan: document.getElementById('catatan').value.trim(), rowIndex: selectedRowIndex
       };
 
-      // Hantar data menggunakan POST request ke API GAS
+      // Hantar sebagai application/x-www-form-urlencoded untuk memintas CORS preflight isu
+      const formBody = new URLSearchParams();
+      formBody.append('payload', JSON.stringify(payload));
+
       fetch(API_URL, {
         method: 'POST',
-        body: JSON.stringify(payload)
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+        body: formBody
       })
       .then(res => res.json())
       .then(res => {
         showToast(res.message, res.success ? "success" : "danger");
         btn.disabled = false;
         tab(mode);
-      }).catch(() => {
+      }).catch((err) => {
         showToast("❌ Ralat Sambungan Network", "danger");
         btn.disabled = false;
       });
@@ -241,7 +250,7 @@
       const t = document.getElementById('toast');
       t.innerText = msg; t.className = `badge bg-${bg} p-3 fs-6 d-block`;
       t.style.display = 'block';
-      setTimeout(() => { t.style.display = 'none'; }, 4000);
+      setTimeout(() => { t.style.display = 'none'; }, 5000);
     }
   </script>
 </body>
