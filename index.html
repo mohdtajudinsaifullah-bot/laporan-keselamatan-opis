@@ -3,54 +3,162 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistem Laporan JSM</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <title>Aplikasi Laporan Pegawai Bertugas BPKR</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    body { background: linear-gradient(135deg, #e8f4fd 0%, #f4f7f6 100%); min-height: 100vh; padding: 15px; font-family: 'Segoe UI', sans-serif; }
-    .main-card { border-radius: 18px; border: none; box-shadow: 0 8px 30px rgba(0,0,0,0.1); background: #fff; max-width: 720px; margin: 0 auto; padding: 28px 24px; }
-    .app-title { color: #1a56db; font-weight: 800; font-size: 1.25rem; letter-spacing: 0.5px; text-align: center; margin-bottom: 22px; }
-    .tab-group { display: flex; border-radius: 12px; overflow: hidden; margin-bottom: 22px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-    .tab-btn { flex: 1; padding: 11px 0; font-weight: 700; font-size: 0.97rem; border: none; cursor: pointer; transition: background 0.2s; text-align: center; }
-    .tab-pagi { background: #e3eeff; color: #1a56db; }
-    .tab-petang { background: #fff3d6; color: #b45309; }
-    .tab-sah { background: #fde8e8; color: #c81e1e; }
-    .tab-pagi.active { background: #1a56db; color: #fff; }
-    .tab-petang.active { background: #f59e0b; color: #fff; }
-    .tab-sah.active { background: #e02424; color: #fff; }
-    .profile-box { background: #f8fafc; border: 1.5px solid #e5eaf0; border-radius: 12px; padding: 14px 16px; margin-bottom: 16px; }
-    .sign-box { border: 2px dashed #d1d9e6; background: #fff; border-radius: 8px; min-height: 80px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-    .sign-box img { max-height: 70px; max-width: 100%; object-fit: contain; }
-    .checklist-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
-    .checklist-table th { background: #1a56db; color: #fff; font-size: 0.82rem; padding: 7px 10px; text-align: center; }
-    .checklist-table td { padding: 7px 10px; font-size: 0.85rem; border-bottom: 1px solid #f0f0f0; }
-    .radio-label { display: inline-flex; align-items: center; gap: 4px; margin: 0 5px; cursor: pointer; }
-    .btn-submit { width: 100%; padding: 13px; border-radius: 12px; font-weight: 800; border: none; cursor: pointer; margin-top: 6px; }
-    .btn-submit-pagi { background: #1a56db; color: #fff; }
-    .btn-submit-petang { background: #f59e0b; color: #fff; }
-    .btn-submit-sah { background: #e02424; color: #fff; }
-    .laporan-card { border: 1.5px solid #e5eaf0; border-radius: 10px; padding: 12px 14px; margin-bottom: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: #fff; }
-    .laporan-card.selected { border-color: #e02424; background: #fff0f0; }
-    .spinner { display: inline-block; width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; margin-right: 8px; vertical-align: middle; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1e293b; color: #fff; padding: 13px 28px; border-radius: 12px; display: none; z-index: 9999; text-align: center;}
+    body {
+      background-color: #f1f5f9;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px 10px;
+    }
+    .card {
+      max-width: 650px;
+      margin: 0 auto;
+      border: none;
+      border-radius: 16px;
+      padding: 25px;
+      background: #ffffff;
+    }
+    /* Header & Logo Styling */
+    .app-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .app-logo {
+      max-width: 100px;
+      height: auto;
+      margin-bottom: 12px;
+      filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.08));
+    }
+    .app-title {
+      color: #1e3a8a;
+      font-weight: 800;
+      font-size: 1.2rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    .app-subtitle {
+      font-size: 0.85rem;
+      color: #64748b;
+      font-weight: 600;
+      margin-bottom: 0;
+    }
+    
+    /* Nav Tab Styling */
+    .tab-container {
+      display: flex;
+      gap: 5px;
+      background: #f8fafc;
+      padding: 5px;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      background: transparent;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border-radius: 8px;
+      color: #64748b;
+      transition: all 0.2s ease;
+    }
+    .tab-btn.active-pagi {
+      background: #2563eb;
+      color: white;
+      box-shadow: 0 2px 4px rgba(37,99,235,0.2);
+    }
+    .tab-btn.active-petang {
+      background: #d97706;
+      color: white;
+      box-shadow: 0 2px 4px rgba(217,119,6,0.2);
+    }
+    .tab-btn.active-sah {
+      background: #059669;
+      color: white;
+      box-shadow: 0 2px 4px rgba(5,150,105,0.2);
+    }
+
+    /* Form Elements */
+    .profile-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 15px;
+    }
+    .sign-box {
+      height: 70px;
+      border: 1px dashed #cbd5e1;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #ffffff;
+      margin-top: 8px;
+    }
+    .sign-box img {
+      max-height: 60px;
+    }
+    .btn-submit {
+      width: 100%;
+      padding: 12px;
+      font-weight: 700;
+      border-radius: 8px;
+      border: none;
+      color: white;
+      transition: background 0.2s;
+    }
+    .btn-submit-pagi { background: #2563eb; }
+    .btn-submit-pagi:hover { background: #1d4ed8; }
+    .btn-submit-petang { background: #d97706; }
+    .btn-submit-petang:hover { background: #b45309; }
+    .btn-submit-sah { background: #059669; }
+    .btn-submit-sah:hover { background: #047857; }
+
+    /* Footer Styling */
+    .app-footer {
+      text-align: center;
+      margin-top: 25px;
+      padding-top: 15px;
+      border-top: 1px solid #f1f5f9;
+      font-size: 0.8rem;
+      color: #64748b;
+    }
   </style>
 </head>
 <body>
-  <div class="main-card">
-    <div class="app-title">🏢 APLIKASI LAPORAN PEGAWAI BERTUGAS BUKA DAN TUTUP PINTU UTAMA BPKR</div>
-    <div class="tab-group">
-      <button type="button" class="tab-btn tab-pagi active" id="btnPagi" onclick="tab('PAGI')">🌅 Pagi</button>
-      <button type="button" class="tab-btn tab-petang" id="btnPetang" onclick="tab('PETANG')">🌇 Petang</button>
-      <button type="button" class="tab-btn tab-sah" id="btnPengesahan" onclick="tab('PENGESAHAN')">✅ Pengesahan</button>
+
+  <div class="card shadow-lg">
+    
+    <!-- HEADER & LOGO -->
+    <div class="app-header">
+      <img src="assets/logo.png" alt="Logo BPKR" class="app-logo" onerror="this.src='https://via.placeholder.com/100?text=BPKR'">
+      <h2 class="app-title">SISTEM LAPORAN PEGAWAI BERTUGAS</h2>
+      <p class="app-subtitle">BUKA DAN TUTUP PINTU UTAMA BPKR</p>
     </div>
 
+    <!-- TAB NAVIGASI -->
+    <div class="tab-container mb-3">
+      <button id="tPagi" class="tab-btn active-pagi" onclick="switchMode('pagi')">🌅 Pagi</button>
+      <button id="tPetang" class="tab-btn" onclick="switchMode('petang')">🌆 Petang</button>
+      <button id="tSah" class="tab-btn" onclick="switchMode('pengesahan')">✅ Pengesahan</button>
+    </div>
+
+    <!-- FORM UTAMA -->
     <form id="fLapor" onsubmit="hantar(event)">
+      
+      <!-- Senarai Rekod Belum Disahkan (Hanya Mod Pengesahan) -->
       <div id="senaraiBox" class="mb-3" style="display:none;">
-        <label class="form-label fw-bold">📋 LAPORAN MENUNGGU PENGESAHAN</label>
+        <label class="form-label fw-bold text-success">📋 LAPORAN MENUNGGU PENGESAHAN</label>
         <div id="senaraiList"><div class="text-muted p-2">⏳ Memuatkan...</div></div>
         <hr>
       </div>
 
+      <!-- Dropdown Pilih Nama -->
       <div class="mb-3 w-100">
         <label class="form-label fw-bold">PILIH NAMA</label>
         <select id="selStaf" class="form-select w-100" onchange="showProfile()" required>
@@ -58,6 +166,7 @@
         </select>
       </div>
 
+      <!-- Info Profil & Tandatangan -->
       <div id="pBox" class="profile-box w-100" style="display:none;">
         <div>Jawatan: <strong id="jStaf"></strong> <span class="badge bg-primary ms-2" id="modeBadge">PAGI</span></div>
         <div class="sign-box mt-2">
@@ -66,191 +175,268 @@
         </div>
       </div>
 
+      <!-- Checklist Petang -->
       <div id="cArea" class="mb-3 w-100" style="display:none;">
         <label class="form-label fw-bold">SEMAKAN TUTUP PINTU</label>
-        <table class="checklist-table table w-100">
-          <thead>
-            <tr><th>Bil.</th><th>Perkara Semakan</th><th>Tindakan</th></tr>
+        <table class="checklist-table table table-bordered w-100">
+          <thead class="table-light">
+            <tr><th>Bil.</th><th>Perkara Semakan</th><th style="width: 120px;" class="text-center">Tindakan</th></tr>
           </thead>
           <tbody id="lBody"></tbody>
         </table>
       </div>
 
+      <!-- Catatan -->
       <div class="mb-3 w-100">
         <label class="form-label fw-bold">CATATAN</label>
         <textarea id="catatan" class="form-control w-100" rows="3" placeholder="Masukkan catatan jika ada..." style="resize: vertical;"></textarea>
       </div>
 
+      <!-- Butang Hantar -->
       <button type="submit" id="sBtn" class="btn-submit btn-submit-pagi w-100">🌅 HANTAR LAPORAN PAGI</button>
     </form>
+
+    <!-- FOOTER HAK CIPTA -->
+    <div class="app-footer">
+      <p class="mb-1">© 2026 <strong>Bahagian Pendaftaran Keurusetiaan & Rekod (BPKR)</strong></p>
+      <small class="text-muted">Hak Cipta Terpelihara • Sistem Pengurusan Keselamatan Pejabat</small>
+    </div>
+
   </div>
-  <div id="toast"></div>
 
   <script>
-    // ⚠️ MASUKKAN URL MAKRU KAU DI SINI
-    const API_URL = "https://script.google.com/macros/s/AKfycbzKhFATiVDS4TFvMBMIsXHejeBBl8X9T4_xvOPe79HT5HY9boIfk5WthhktzctrK6pcKw/exec"; 
+    // MASUKKAN URL WEB APP GOOGLE APPS SCRIPT KAU DI SINI
+    const API_URL = "https://script.google.com/macros/s/AKfycbxO6QhOeOmWZCnEU82SLHBk2c-aQ4LNsCYSHsaEOGsPmt_YoLJsLmoujTWlFZPr4Gj4Cw/exec";
 
-    let mode = 'PAGI';
-    let db = [];
-    let selectedRowIndex = null;
-    const checklistItems = [
-      "Semua pintu-pintu Bahagian/Unit dikunci.",
-      "Semua pintu rintangan api (kecemasan) bertutup rapat/berkunci.",
-      "Semua peralatan elektrik telah dimatikan.",
-      "Semua suis lampu dan telah dimatikan.",
-      "Peralatan elektrik di pantri telah dimatikan.",
-      "Kebersihan Bahagian/Unit memuaskan."
+    let gStaf = [];
+    let curMode = 'pagi';
+    let selId = '';
+    const items = [
+      "Semua Pintu Utama telah dikunci.",
+      "Lampu Pejabat telah dimatikan.",
+      "Penghawa Dingin (AC) telah dimatikan.",
+      "Peralatan Elektrik/Plug telah ditutup.",
+      "Tiada individu/staf yang tertinggal di pejabat.",
+      "Tetingkap/Slaid kaca telah dirapatkan dan dikunci."
     ];
 
-    function muatDataStaf() {
-      fetch(`${API_URL}?action=getStaffData`)
-        .then(res => res.json())
-        .then(r => {
-          db = r;
-          const s = document.getElementById('selStaf');
-          s.innerHTML = '<option value="">-- Sila Pilih Nama --</option>';
-          r.forEach(x => s.add(new Option(x.nama, x.nama)));
-        }).catch(e => showToast("⚠️ Gagal memuat data staf", "danger"));
-    }
+    window.onload = function() {
+      renderChecklist();
+      loadStaf();
+    };
 
-    muatDataStaf();
-
-    function muatSenarai() {
-      document.getElementById('senaraiList').innerHTML = '<div>⏳ Memuatkan...</div>';
-      selectedRowIndex = null;
-      fetch(`${API_URL}?action=getLaporanMenunggu`)
-        .then(res => res.json())
-        .then(renderSenarai)
-        .catch(() => document.getElementById('senaraiList').innerHTML = '<div>⚠️ Gagal memuatkan senarai</div>');
-    }
-
-    function renderSenarai(senarai) {
-      const container = document.getElementById('senaraiList');
-      if (!senarai || senarai.length === 0) {
-        container.innerHTML = '<div class="text-success p-2">✅ Tiada laporan menunggu pengesahan.</div>';
-        return;
-      }
-      let html = '';
-      senarai.forEach(item => {
-        html += `
-          <div class="laporan-card" id="card_${item.rowIndex}" onclick="pilihLaporan(${item.rowIndex}, this)">
-            <div class="badge bg-danger">📅 ${item.tarikh}</div>
-            <div class="small text-end text-muted">
-              <div>🌅 <b>${item.namaPagi}</b> (${item.jamPagi})</div>
-              <div>🌇 <b>${item.namaPetang}</b> (${item.jamPetang})</div>
-            </div>
-          </div>`;
+    function renderChecklist() {
+      let h = '';
+      items.forEach((it, i) => {
+        h += `<tr>
+          <td class="text-center">${i+1}</td>
+          <td>${it}</td>
+          <td class="text-center">
+            <select class="form-select form-select-sm chk-item" required>
+              <option value="Ya">Ya</option>
+              <option value="Tidak">Tidak</option>
+            </select>
+          </td>
+        </tr>`;
       });
-      container.innerHTML = html;
+      document.getElementById('lBody').innerHTML = h;
     }
 
-    function pilihLaporan(rowIndex, el) {
-      document.querySelectorAll('.laporan-card').forEach(c => c.classList.remove('selected'));
-      if (selectedRowIndex === rowIndex) { selectedRowIndex = null; } 
-      else { selectedRowIndex = rowIndex; el.classList.add('selected'); }
+    function loadStaf() {
+      fetch(`${API_URL}?action=getStaf`)
+        .then(r => r.json())
+        .then(res => {
+          if (res.status === 'success') {
+            gStaf = res.data;
+            popStaf();
+          } else {
+            alert('Gagal memuatkan senarai staf: ' + res.message);
+          }
+        })
+        .catch(e => console.error("Error loadStaf:", e));
+    }
+
+    function popStaf() {
+      const s = document.getElementById('selStaf');
+      s.innerHTML = '<option value="">-- Sila Pilih Nama --</option>';
+
+      let f = gStaf;
+      
+      // Jika mod pengesahan, paparkan staf yang ada role 'ADMIN' ATAU paparkan semua jika tiada role ditetap
+      if (curMode === 'pengesahan') {
+        const adminStaf = gStaf.filter(x => x.role && x.role.toUpperCase() === 'ADMIN');
+        if (adminStaf.length > 0) {
+          f = adminStaf; // Papar pegawai yang ada role ADMIN sahaja
+        } else {
+          f = gStaf; // Jika tiada role ADMIN diset dalam Sheet, papar semua staf supaya tak kosong
+        }
+      }
+
+      f.forEach(x => {
+        let opt = document.createElement('option');
+        opt.value = x.nama;
+        opt.textContent = `${x.nama} (${x.jawatan})`;
+        s.appendChild(opt);
+      });
+    }
+
+    function switchMode(m) {
+      curMode = m;
+      selId = '';
+      
+      document.getElementById('tPagi').className = 'tab-btn' + (m === 'pagi' ? ' active-pagi' : '');
+      document.getElementById('tPetang').className = 'tab-btn' + (m === 'petang' ? ' active-petang' : '');
+      document.getElementById('tSah').className = 'tab-btn' + (m === 'pengesahan' ? ' active-sah' : '');
+
+      const b = document.getElementById('sBtn');
+      const mb = document.getElementById('modeBadge');
+      
+      document.getElementById('cArea').style.display = (m === 'petang') ? 'block' : 'none';
+      document.getElementById('senaraiBox').style.display = (m === 'pengesahan') ? 'block' : 'none';
+
+      if (m === 'pagi') {
+        b.className = 'btn-submit btn-submit-pagi w-100';
+        b.innerHTML = '🌅 HANTAR LAPORAN PAGI';
+        mb.className = 'badge bg-primary ms-2';
+        mb.innerText = 'PAGI';
+      } else if (m === 'petang') {
+        b.className = 'btn-submit btn-submit-petang w-100';
+        b.innerHTML = '🌆 HANTAR LAPORAN PETANG';
+        mb.className = 'badge bg-warning text-dark ms-2';
+        mb.innerText = 'PETANG';
+      } else {
+        b.className = 'btn-submit btn-submit-sah w-100';
+        b.innerHTML = '✅ SAHKAN & JANA PDF';
+        mb.className = 'badge bg-success ms-2';
+        mb.innerText = 'PENGESAHAN';
+        loadPending();
+      }
+
+      popStaf();
+      document.getElementById('pBox').style.display = 'none';
+      document.getElementById('selStaf').value = '';
     }
 
     function showProfile() {
-      const nama = document.getElementById('selStaf').value;
-      const u = db.find(x => x.nama === nama);
-      const pBox = document.getElementById('pBox');
-      if (!u) { pBox.style.display = 'none'; return; }
-      if (mode === 'PENGESAHAN' && u.role !== 'ADMIN') {
-        showToast("🚫 Akses Ditolak! Anda bukan ADMIN.", "danger");
-        document.getElementById('selStaf').value = '';
-        pBox.style.display = 'none';
-        return;
-      }
-      pBox.style.display = 'block';
-      document.getElementById('jStaf').innerText = u.jawatan || "-";
-      const img = document.getElementById('sImg');
-      const ph = document.getElementById('signPlaceholder');
-      if (u.signUrl) {
-        img.src = u.signUrl; img.style.display = 'block'; ph.style.display = 'none';
+      const n = document.getElementById('selStaf').value;
+      const st = gStaf.find(x => x.nama === n);
+      const pB = document.getElementById('pBox');
+      
+      if (st) {
+        document.getElementById('jStaf').innerText = st.jawatan;
+        const img = document.getElementById('sImg');
+        const sp = document.getElementById('signPlaceholder');
+        if (st.signUrl && st.signUrl.length > 5) {
+          img.src = st.signUrl;
+          img.style.display = 'block';
+          sp.style.display = 'none';
+        } else {
+          img.style.display = 'none';
+          sp.style.display = 'inline';
+        }
+        pB.style.display = 'block';
       } else {
-        img.style.display = 'none'; ph.style.display = 'block';
+        pB.style.display = 'none';
       }
     }
 
-    function tab(f) {
-      mode = f;
-      ['btnPagi','btnPetang','btnPengesahan'].forEach(id => document.getElementById(id).classList.remove('active'));
-      document.getElementById(f === 'PAGI' ? 'btnPagi' : f === 'PETANG' ? 'btnPetang' : 'btnPengesahan').classList.add('active');
-      document.getElementById('modeBadge').innerText = f;
-      
-      const btn = document.getElementById('sBtn');
-      btn.className = 'btn-submit btn-submit-' + (f === 'PENGESAHAN' ? 'sah' : f === 'PETANG' ? 'petang' : 'pagi');
-      btn.innerText = f === 'PAGI' ? '🌅 HANTAR LAPORAN PAGI' : f === 'PETANG' ? '🌇 HANTAR LAPORAN PETANG' : '✅ SAHKAN LAPORAN';
+    function loadPending() {
+      const sL = document.getElementById('senaraiList');
+      sL.innerHTML = '<div class="text-muted p-2 text-center">⏳ Memuatkan rekod...</div>';
 
-      document.getElementById('senaraiBox').style.display = f === 'PENGESAHAN' ? 'block' : 'none';
-      if(f === 'PENGESAHAN') muatSenarai();
-
-      const cArea = document.getElementById('cArea');
-      if (f === 'PETANG') {
-        cArea.style.display = 'block';
-        let h = '';
-        checklistItems.forEach((v, i) => {
-          h += `<tr><td>${i+1}</td><td>${v}</td><td>
-            <label class="radio-label"><input type="radio" name="r${i}" value="/" checked> ✓ Ya</label>
-            <label class="radio-label"><input type="radio" name="r${i}" value="X"> ✗ Tidak</label>
-          </td></tr>`;
+      fetch(`${API_URL}?action=getPending`)
+        .then(r => r.json())
+        .then(res => {
+          if (res.status === 'success' && res.data && res.data.length > 0) {
+            let h = '<div class="d-flex flex-column gap-2">';
+            res.data.forEach(r => {
+              h += `
+              <label class="p-2 border rounded-3 bg-light d-flex align-items-center justify-content-between shadow-sm cursor-pointer" style="border-left: 5px solid #dc3545 !important;">
+                <div class="d-flex align-items-center gap-2">
+                  <input class="form-check-input flex-shrink-0" type="radio" name="rPending" value="${r.rowId}" onchange="selId='${r.rowId}'" required>
+                  <div>
+                    <span class="badge bg-danger mb-1">${r.tarikh}</span>
+                    <div class="small text-dark fw-bold">🌅 ${r.namaBuka} <span class="text-muted fw-normal">(${r.masaBuka})</span></div>
+                    <div class="small text-dark fw-bold">🌆 ${r.namaTutup} <span class="text-muted fw-normal">(${r.masaTutup})</span></div>
+                  </div>
+                </div>
+              </label>`;
+            });
+            h += '</div>';
+            sL.innerHTML = h;
+          } else {
+            sL.innerHTML = '<div class="alert alert-info py-2 mb-0 text-center">Tiada rekod menunggu pengesahan.</div>';
+          }
+        })
+        .catch(e => {
+          console.error("Error loadPending:", e);
+          sL.innerHTML = '<div class="alert alert-danger py-2 mb-0 text-center">Gagal memuatkan senarai pengesahan.</div>';
         });
-        document.getElementById('lBody').innerHTML = h;
-      } else { cArea.style.display = 'none'; }
-      
-      document.getElementById('selStaf').value = '';
-      document.getElementById('pBox').style.display = 'none';
-      document.getElementById('catatan').value = '';
     }
 
     function hantar(e) {
       e.preventDefault();
-      const nama = document.getElementById('selStaf').value;
-      if (mode === 'PENGESAHAN' && !selectedRowIndex) return showToast("⚠️ Sila pilih laporan!", "warning");
+      const n = document.getElementById('selStaf').value;
+      const cat = document.getElementById('catatan').value;
+      const b = document.getElementById('sBtn');
 
-      const u = db.find(x => x.nama === nama);
-      const chk = [];
-      if (mode === 'PETANG') {
-        for (let i = 0; i < 6; i++) {
-          const sel = document.querySelector(`input[name="r${i}"]:checked`);
-          chk.push(sel ? sel.value : "/");
-        }
+      if (!n) {
+        alert("Sila pilih nama staf!");
+        return;
       }
 
-      const btn = document.getElementById('sBtn');
-      btn.disabled = true;
-      btn.innerHTML = '<span class="spinner"></span>Memproses...';
+      if (curMode === 'pengesahan' && !selId) {
+        alert("Sila pilih rekod yang hendak disahkan!");
+        return;
+      }
 
-      const payload = {
-        fasa: mode, nama: u.nama, signUrl: u.signUrl, checklist: chk,
-        catatan: document.getElementById('catatan').value.trim(), rowIndex: selectedRowIndex
+      let pData = {
+        action: curMode,
+        nama: n,
+        catatan: cat,
+        rowId: selId
       };
 
-      // Hantar sebagai application/x-www-form-urlencoded untuk memintas CORS preflight isu
-      const formBody = new URLSearchParams();
-      formBody.append('payload', JSON.stringify(payload));
+      if (curMode === 'petang') {
+        let chkVal = [];
+        document.querySelectorAll('.chk-item').forEach(s => chkVal.push(s.value));
+        pData.checklist = JSON.stringify(chkVal);
+      }
+
+      b.disabled = true;
+      b.innerHTML = '⏳ Menghantar data...';
+
+      // Hantar data guna URLSearchParams untuk elak issue CORS
+      let params = new URLSearchParams();
+      for (let k in pData) {
+        params.append(k, pData[k]);
+      }
 
       fetch(API_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
-        body: formBody
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: params.toString()
       })
-      .then(res => res.json())
+      .then(r => r.json())
       .then(res => {
-        showToast(res.message, res.success ? "success" : "danger");
-        btn.disabled = false;
-        tab(mode);
-      }).catch((err) => {
-        showToast("❌ Ralat Sambungan Network", "danger");
-        btn.disabled = false;
+        b.disabled = false;
+        switchMode(curMode);
+        if (res.status === 'success') {
+          alert(res.message);
+          document.getElementById('catatan').value = '';
+          if (curMode === 'pengesahan') {
+            loadPending();
+            if(res.pdfUrl) window.open(res.pdfUrl, '_blank');
+          }
+        } else {
+          alert('Ralat: ' + res.message);
+        }
+      })
+      .catch(err => {
+        b.disabled = false;
+        switchMode(curMode);
+        alert('Gagal menghantar laporan: ' + err);
       });
-    }
-
-    function showToast(msg, bg) {
-      const t = document.getElementById('toast');
-      t.innerText = msg; t.className = `badge bg-${bg} p-3 fs-6 d-block`;
-      t.style.display = 'block';
-      setTimeout(() => { t.style.display = 'none'; }, 5000);
     }
   </script>
 </body>
