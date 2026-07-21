@@ -51,14 +51,14 @@
         <hr>
       </div>
 
-      <div class="mb-3">
+      <div class="mb-3 w-100">
         <label class="form-label fw-bold">PILIH NAMA</label>
-        <select id="selStaf" class="form-select" onchange="showProfile()" required>
+        <select id="selStaf" class="form-select w-100" onchange="showProfile()" required>
           <option value="">-- Sila Pilih Nama --</option>
         </select>
       </div>
 
-      <div id="pBox" class="profile-box" style="display:none;">
+      <div id="pBox" class="profile-box w-100" style="display:none;">
         <div>Jawatan: <strong id="jStaf"></strong> <span class="badge bg-primary ms-2" id="modeBadge">PAGI</span></div>
         <div class="sign-box mt-2">
           <img id="sImg" src="" alt="Tandatangan" style="display:none;">
@@ -66,9 +66,9 @@
         </div>
       </div>
 
-      <div id="cArea" class="mb-3" style="display:none;">
+      <div id="cArea" class="mb-3 w-100" style="display:none;">
         <label class="form-label fw-bold">SEMAKAN TUTUP PINTU</label>
-        <table class="checklist-table table">
+        <table class="checklist-table table w-100">
           <thead>
             <tr><th>Bil.</th><th>Perkara Semakan</th><th>Tindakan</th></tr>
           </thead>
@@ -76,19 +76,19 @@
         </table>
       </div>
 
-      <div class="mb-3">
+      <div class="mb-3 w-100">
         <label class="form-label fw-bold">CATATAN</label>
-        <textarea id="catatan" class="form-control" rows="2" placeholder="Masukkan catatan jika ada..."></textarea>
+        <textarea id="catatan" class="form-control w-100" rows="3" placeholder="Masukkan catatan jika ada..." style="resize: vertical;"></textarea>
       </div>
 
-      <button type="submit" id="sBtn" class="btn-submit btn-submit-pagi">🌅 HANTAR LAPORAN PAGI</button>
+      <button type="submit" id="sBtn" class="btn-submit btn-submit-pagi w-100">🌅 HANTAR LAPORAN PAGI</button>
     </form>
   </div>
   <div id="toast"></div>
 
   <script>
     // ⚠️ MASUKKAN URL MAKRU KAU DI SINI
-    const API_URL = "https://script.google.com/macros/s/AKfycbwxoT4mu_7l1EFEbyH70rdLZFEIYWQSmTVqLY2jcCLSh_DTB45krFzScijL8b49rBKCXg/exec"; 
+    const API_URL = "https://script.google.com/macros/s/AKfycbzKhFATiVDS4TFvMBMIsXHejeBBl8X9T4_xvOPe79HT5HY9boIfk5WthhktzctrK6pcKw/exec"; 
 
     let mode = 'PAGI';
     let db = [];
